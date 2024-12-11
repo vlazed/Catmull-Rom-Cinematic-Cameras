@@ -3,6 +3,7 @@ AddCSLuaFile("shared.lua")
 include("shared.lua")
 
 local CAMERA_MODEL = Model("models/hunter/blocks/cube025x025x025.mdl")
+local COLOR_GHOST = Color(0, 0, 0, 100)
 
 ENT.PhysShadowControl = {}
 ENT.PhysShadowControl.secondstoarrive  = .01
@@ -21,12 +22,12 @@ function ENT:Initialize()
 	self.Entity:PhysicsInit(SOLID_VPHYSICS)
 	self.Entity:SetMoveType(MOVETYPE_VPHYSICS)
 	self.Entity:SetSolid(SOLID_NONE)
-	self.Entity:SetColor(Color(255,255,255,0))
+	self.Entity:SetColor(color_transparent)
 	self.Entity:DrawShadow(false)
 	
 	self.Entity:SetCollisionGroup(COLLISION_GROUP_WEAPON)
 	
-	self.Entity:SetColor(0, 0, 0, 100)
+	self.Entity:SetColor(COLOR_GHOST)
 	
 	self.Victims = {}
 	
@@ -149,11 +150,11 @@ function ENT:PhysicsSimulate(phys, deltatime)
 		if CurNode.BankOnTurn then -- :/
 			self.LastPos = self.LastPos or CurPos
 			
-			local NextPosNrml = self:WorldToLocal(self.PhysShadowControl.pos):GetNormal()
+			local NextPosNrml = self:WorldToLocal(self.PhysShadowControl.pos):GetNormalized()
 			local Multi = (math.abs(NextPosNrml.y) / NextPosNrml.y) * -1
 			
-			local a = (CurPos - self.LastPos):GetNormal()
-			local b = (self.PhysShadowControl.pos - CurPos):GetNormal()
+			local a = (CurPos - self.LastPos):GetNormalized()
+			local b = (self.PhysShadowControl.pos - CurPos):GetNormalized()
 			local dot = math.Clamp((1 - (a:Dot(b) )) * CurNode.DeltaBankMulti * 50, -1, 1) * 90 * CurNode.DeltaBankMax
 			
 			self.LastPos = CurPos

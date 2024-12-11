@@ -32,8 +32,8 @@ if CLIENT then
 	
 	function CatmullRomCams.CL.HUDHide(element)
 		local ply = LocalPlayer()
-		
-		if ply:GetNWEntity("UnderControlCatmullRomCamera") and ply:GetNWEntity("UnderControlCatmullRomCamera"):IsValid() then	
+
+		if IsValid(ply) and ply:GetNWEntity("UnderControlCatmullRomCamera") and ply:GetNWEntity("UnderControlCatmullRomCamera"):IsValid() then	
 			return false
 		end
 	end
