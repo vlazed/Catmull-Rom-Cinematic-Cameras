@@ -131,13 +131,14 @@ function ENT:PhysicsSimulate(phys, deltatime)
 	
 	local CurPos  = self:GetPos()
 	local CurNode = self.CatmullRomController.EntityList[self.CatmullRomController.CurSegment]
+	local zoom = self.CatmullRomController:CalcZoom()
 	
 	phys:Wake()
 	
 	if CurNode.HitchcockEffect then
 		self.HitchcockEffectEndpoint = self.HitchcockEffectEndpoint or (self.CatmullRomController.PointsList[self.CatmullRomController.CurSegment + 2] - self.CatmullRomController.PointsList[self.CatmullRomController.CurSegment + 1]):GetNormal()
 		
-		self.PhysShadowControl.pos = self.CatmullRomController.PointsList[self.CatmullRomController.CurSegment] + (self.HitchcockEffectEndpoint * CatmullRomCams.SH.MetersToUnits(self:CalcHitchcockEffect(CurNode.HitchcockEffect, self.CatmullRomController:CalcZoom())))
+		self.PhysShadowControl.pos = self.CatmullRomController.PointsList[self.CatmullRomController.CurSegment] + (self.HitchcockEffectEndpoint * CatmullRomCams.SH.MetersToUnits(self:CalcHitchcockEffect(CurNode.HitchcockEffect, zoom)))
 	else
 		self.HitchcockEffectEndpoint = nil
 		
@@ -197,6 +198,7 @@ function ENT:PhysicsSimulate(phys, deltatime)
 	
 	self.PhysShadowControl.deltatime = deltatime
 	
+	self:Follow(zoom)
 	return phys:ComputeShadowControl(self.PhysShadowControl)
 end
 
@@ -235,6 +237,26 @@ function ENT:SetPlayers(players)
 	for _, v in pairs(self.Victims) do
 		if v.IsValid and v:IsValid() and v.SetViewEntity then
 			v:SetViewEntity(self.Entity)
+		end
+	end
+end
+
+function ENT:SetFollower(entity)
+	self.Follower = entity
+end
+
+function ENT:Follow(zoom, roll)
+	if not IsValid(self.Follower) then return end
+	local phys = self:GetPhysicsObject()
+	
+	if phys and phys:IsValid() then
+		local follower = self.Follower
+		follower:SetPos(phys:GetPos())
+		follower:SetAngles(phys:GetAngles())
+
+		if follower:GetClass() == "hl_camera" then
+			follower:SetFOV(zoom)
+			-- follower:SetRoll(roll)
 		end
 	end
 end

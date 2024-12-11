@@ -27,5 +27,9 @@ language.Add("Tool.catmullrom_camera_hitchcock.name", "Catmull-Rom Cinematic Cam
 language.Add("Tool.catmullrom_camera_hitchcock.desc", "Vomit your guts out with this useful tool! Now you can create that sickening effect that those poor people on the Galactica have to suffer when they jump.")
 language.Add("Tool.catmullrom_camera_hitchcock.0",    "Left on an end node to setup a Hitchcock sequence. (Makes 4 nodes due to the way the effect works.)")
 
+language.Add("Tool.catmullrom_camera_smh.name", "Catmull-Rom Cinematic Cameras: SMH Interfacer")
+language.Add("Tool.catmullrom_camera_smh.desc", "Bake a selected camera to the defined Catmull-Rom spline when triggered.")
+language.Add("Tool.catmullrom_camera_smh.0",    "Left on a camera entity (Camera, Advanced Camera, etc.)")
+
 language.Add("Undone.CatmullRomCamera", "Undone Catmull-Rom Camera Segment")
 language.Add("Undone.CatmullRomCamsHitchcockEffect", "Undone Hitchcock Effect Shot")

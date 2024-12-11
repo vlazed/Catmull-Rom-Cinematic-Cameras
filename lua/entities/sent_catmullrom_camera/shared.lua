@@ -60,6 +60,7 @@ function ENT:On(ply)
 		self.ViewPointEnt.DeltaBankConstant = self.DeltaBankConstant or 0
 		
 		self.ViewPointEnt:SetPlayers(ply)
+		self.ViewPointEnt:SetFollower(ply:GetNWEntity("CatmullRomCams.Camera"))
 		
 		self.Playing = true
 		self:SetNWBool("IsPlaying", true)
