@@ -16,4 +16,4 @@ This fork interfaces Stop Motion Helper with Catmull-Rom Cinematic Cameras (CRCC
 4. Select the camera that you just spawned.
 5. Press the key that you have bound to view the track.
 6. If all goes well, you should see the interfaced camera in your view.
-7. Verify that the camera follow the CRCCam track.
+7. If you see text indicating that physics recording has stopped, your camera should be baked! Verify that the camera follow the CRCCam track.
