@@ -31,7 +31,7 @@ do
         local crcEnt = ply:GetNWEntity("UnderControlCatmullRomCamera")
 
         -- Check if we have a camera to interface, if we just triggered the track, if we have SMH installed, and if we are not baking
-        if IsValid(camera) and crcEnt ~= NULL and SMH and not SMH.PhysRecord.IsActive() then
+        if IsValid(camera) and crcEnt ~= NULL and SMH and not wasActive then
             local sum = 0
             for i = 2, #crcEnt.CatmullRomController.DurationList - 1 do
                 sum = sum + crcEnt.CatmullRomController.DurationList[i]
@@ -40,17 +40,19 @@ do
             oldState.RecordInterval = SMH.PhysRecord.RecordInterval
             oldState.StartDelay = SMH.PhysRecord.StartDelay
 
-            SMH.PhysRecord.FrameCount = sum * SMH.State.PlaybackRate * 0.5
+            SMH.PhysRecord.FrameCount = sum * SMH.State.PlaybackRate
             SMH.PhysRecord.RecordInterval = 0
             SMH.PhysRecord.StartDelay = 0
             SMH.PhysRecord.SelectedEntities = {[camera] = SMH.State.Timeline}
             SMH.PhysRecord.RecordToggle()
             wasActive = true
-        elseif not SMH.PhysRecord.IsActive() and wasActive then
+        elseif not IsValid(crcEnt) and wasActive then
+            -- Stop recording when the track has stopped (i.e. your view returns)
             wasActive = false
             SMH.PhysRecord.FrameCount = oldState.FrameCount
             SMH.PhysRecord.RecordInterval = oldState.RecordInterval
             SMH.PhysRecord.StartDelay = oldState.StartDelay
+            SMH.PhysRecord.RecordToggle()
         end
     end)
 end
