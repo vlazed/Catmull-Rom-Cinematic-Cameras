@@ -14,7 +14,7 @@ This fork interfaces Stop Motion Helper with Catmull-Rom Cinematic Cameras (CRCC
 2. Either a) download the zip file and extract the folder or b) open up a command terminal (with Git installed) and execute `git clone https://github.com/vlazed/Catmull-Rom-Cinematic-Cameras.git`
 3. If you did step 2b, execute change directories to the cloned folder (`cd Catmull-Rom-Cinematic-Cameras`) and `git switch smh-interface`
 
-To stay updated to the latest version of this fork, either a) do step 2a again, or b) in the open the command terminal in the folder and perform `git pull`.
+To stay updated to the latest version of this fork, either a) do step 2a again, or b) open the command terminal in the Catmull-Rom-Cinematic-Cameras folder and perform `git pull`.
 
 ### Usage
 1. Create a CRCCam track layout.
