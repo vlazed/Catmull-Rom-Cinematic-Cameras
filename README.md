@@ -25,4 +25,4 @@ To stay updated to the latest version of this fork, either a) do step 2a again, 
 6. If all goes well, you should see the selected camera in your view.
 7. If you see text indicating that physics recording has stopped, your camera should be baked! Verify that the camera follow the CRCCam track.
 
-If you need to make modifications to the camera track, make sure to right-click anywhere with the Stop Motion Helper interfacer tool. Ideally, you should use this tool after you have finalized the spline path.
+If you need to make modifications to the camera track, make sure to right-click anywhere with the Stop Motion Helper interfacer tool. Ideally, you should use this tool after you have finalized the spline path, or else you will overwrite your baked in camera track in SMH.
