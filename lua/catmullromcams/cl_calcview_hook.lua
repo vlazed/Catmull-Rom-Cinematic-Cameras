@@ -1,8 +1,11 @@
 
+local gmodToolMode = GetConVar("gmod_toolmode")
+
 function CatmullRomCams.CL.CalcViewOverride(ply, origin, angles, fov)
+	gmodToolMode = gmodToolMode or GetConVar("gmod_toolmode")
 	local weap = ply:GetActiveWeapon()
 	
-	local toolmode_active = (CatmullRomCams.SToolMethods.ToolObj and (gmod_toolmode:GetString() == "catmullrom_camera") and weap and weap:IsValid() and (weap:GetClass() == "gmod_tool"))
+	local toolmode_active = (CatmullRomCams.SToolMethods.ToolObj and (gmodToolMode:GetString() == "catmullrom_camera") and weap and weap:IsValid() and (weap:GetClass() == "gmod_tool"))
 	local playing_track   = ply:GetNWEntity("UnderControlCatmullRomCamera") and ply:GetNWEntity("UnderControlCatmullRomCamera"):IsValid()
 	
 	if not (toolmode_active or playing_track) then return end

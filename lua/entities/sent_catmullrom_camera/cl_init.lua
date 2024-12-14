@@ -1,6 +1,6 @@
 include("shared.lua")
 
-CreateConVar("cl_draw_catmullrom_cameras", "1")
+local drawCatmullRomCameras = CreateConVar("cl_draw_catmullrom_cameras", "1")
 
 ENT.RenderGroup = RENDERGROUP_BOTH
 
@@ -39,6 +39,7 @@ function ENT:Initialize()
 	
 	self:FireShootOff()
 end
+
 ---[[
 function ENT:Think()
     if self.NeedCameraGhost then
@@ -67,7 +68,7 @@ function ENT:Think()
 	self:TrackEntity(self.Entity:GetNetworkedEntity("TrackEnt"), self.Entity:GetNetworkedVector("TrackEntLPos"))
 	
 	self.ShouldDrawInfo = (self:GetNWEntity("MasterController"):GetNetworkedEntity("ControllingPlayer") == LocalPlayer())
-	self.ShouldDraw     = (GetConVarNumber("cl_draw_catmullrom_cameras") == 0) and 0 or 1 -- Like that you can see other player's cameras while you're filming
+	self.ShouldDraw     = (drawCatmullRomCameras:GetInt() == 0) and 0 or 1 -- Like that you can see other player's cameras while you're filming
 	
 	if (self.ShouldDraw == 0) then return end
 	if not self:GetNWBool("IsMasterController") then return end
