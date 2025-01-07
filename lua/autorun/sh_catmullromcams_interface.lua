@@ -16,6 +16,7 @@ do
     local wasActive = false
     hook.Remove("Think", "CatmullRomCams.SMH")
     hook.Add("Think", "CatmullRomCams.SMH", function()
+        ---@diagnostic disable
         if not SMH then
             tries = tries + 1
             if tries > MAX_TRIES then
@@ -54,5 +55,6 @@ do
             SMH.PhysRecord.StartDelay = oldState.StartDelay
             SMH.PhysRecord.RecordToggle()
         end
+        ---@diagnostic enable
     end)
 end

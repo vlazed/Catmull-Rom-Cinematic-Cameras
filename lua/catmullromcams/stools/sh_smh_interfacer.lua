@@ -56,10 +56,12 @@ local classMap = {
 
 ---@param panel ControlPanel
 function STool.BuildCPanel(panel, camera)
+    ---@diagnostic disable
     panel:Help(SMH and "Stop Motion Helper is installed. Select a camera entity to bake." or "Stop Motion Helper not installed")
 
     if not SMH then return end
     if not camera then return end
 
     panel:Help(("Camera selected: %s"):format(classMap[camera:GetClass()]))
+    ---@diagnostic enable
 end
