@@ -93,6 +93,7 @@ function ENT:Think()
 end
 ---[[
 function ENT:Draw()
+	if GetViewEntity() ~= LocalPlayer() then return end
 	if self:GetNWBool("IsMapController") then return end
 	if not self:GetNWEntity("MasterController").RequestGuideBeamDraw then return end -- Haven't received the controller yet
 	
@@ -112,6 +113,7 @@ function ENT:Draw()
 end
 
 function ENT:DrawTranslucent()
+	if GetViewEntity() ~= LocalPlayer() then return end
 	if self:GetNWBool("IsMapController") then return end
 	if not self:GetNWBool("IsMasterController") then return end
 	
