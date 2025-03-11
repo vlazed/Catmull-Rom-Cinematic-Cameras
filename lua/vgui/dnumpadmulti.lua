@@ -1,4 +1,4 @@
-/*   _                                
+--[[   _                                
     ()                               
    _| |   __   _ __   ___ ___     _ _ 
  /'_` | /'__`\('__)/' _ ` _ `\ /'_`)
@@ -9,7 +9,7 @@
 	
 	A loverly multi-use numpad. Now can remember more then once key!
 
-*/
+]]
  
 local KP_PERIOD = 10
 local KP_ENTER  = 11
@@ -18,6 +18,7 @@ local KP_MINUS  = 13
 local KP_STAR   = 14
 local KP_DIV    = 15
 
+---@class DNumPadMulti: DPanel
 local PANEL = {}
 
 function PANEL:Init()

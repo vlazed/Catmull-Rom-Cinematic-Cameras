@@ -12,7 +12,7 @@ end
 function CatmullRomCams.SH.SaveLoad.Spawn_CCmd(ply, cmd, args)
 	local filename = args[1] or ""
 	
-	if not file.Exists(CatmullRomCams.FilePath .. filename) then return ErrorNoHalt("Attempted to load non-existant track named '", filename, "'\n") end
+	if not file.Exists(CatmullRomCams.FilePath .. filename, "DATA") then return ErrorNoHalt("Attempted to load non-existant track named '", filename, "'\n") end
 	
 	local data = util.KeyValuesToTable(file.Read(CatmullRomCams.FilePath .. filename) or "") or {}
 	

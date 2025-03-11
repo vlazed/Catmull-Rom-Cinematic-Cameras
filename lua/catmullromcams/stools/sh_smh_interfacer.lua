@@ -1,4 +1,3 @@
----@class STool: TOOL
 local STool = {}
 
 CatmullRomCams.SToolMethods.SMH = STool
@@ -8,7 +7,7 @@ local cameraClasses = {
     hl_camera = true
 }
 
----@param self STool
+---@param self TOOL
 ---@param trace TraceResult
 ---@return boolean
 function STool.LeftClick(self, trace)	
@@ -22,7 +21,7 @@ function STool.LeftClick(self, trace)
 	return true
 end
 
----@param self STool
+---@param self TOOL
 ---@param trace TraceResult
 ---@return boolean
 function STool.RightClick(self, trace)
@@ -38,7 +37,7 @@ function STool.Reload(self, trace)
 end
 
 local lastCamera = NULL
----@param self STool
+---@param self TOOL
 function STool.Think(self)
     local currentCamera = self:GetCamera()
     if currentCamera ~= lastCamera then

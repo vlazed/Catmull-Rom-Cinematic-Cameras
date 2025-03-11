@@ -65,18 +65,25 @@ CatmullRomCams.CL = CatmullRomCams.CL or {}
 
 CatmullRomCams.SToolMethods = {}
 
+---@param dist number
+---@return number
 function CatmullRomCams.SH.UnitsToMeters(dist)
 	return (dist * 0.0254)
 end
 
+---@param dist number
+---@return number
 function CatmullRomCams.SH.MetersToUnits(dist)
 	return (dist * 39.3700787)
 end
 
+---@param trace TraceResult
+---@return boolean
 function CatmullRomCams.SToolMethods.ValidTrace(trace)
 	return (trace and trace.Entity and trace.Entity.GetClass and trace.Entity.IsValid and trace.Entity:IsValid() and (trace.Entity:GetClass() == "sent_catmullrom_camera"))
 end
 
+---@type CRCTracks
 CatmullRomCams.Tracks = CatmullRomCams.Tracks or {}
 
 local files = file.Find("CatmullRomCams/*.lua", "LUA")
@@ -95,6 +102,12 @@ local files_stools_client = file.Find("weapons/gmod_tool/stools/*.lua", "LUA")
 for _, v in pairs(files_stools_client) do
 	AddCSLuaFile("weapons/gmod_tool/stools/" .. v)
 end
+
+local files_derma_client = file.Find("weapons/gmod_tool/derma/*.lua", "LUA")
+for _, v in pairs(files_derma_client) do
+	AddCSLuaFile("weapons/gmod_tool/derma/" .. v)
+end
+
 --[[
 
 CatmullRomCams = CatmullRomCams or {}

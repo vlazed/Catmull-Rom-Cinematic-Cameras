@@ -3,6 +3,11 @@ if CLIENT then
 	CatmullRomCams.CL.TunnelingTracer = {}
 	--CatmullRomCams.CL.TunnelingTracer.mask = MASK_NPCWORLDSTATIC
 	
+	---@param ply CRCPlayer
+	---@param origin Vector
+	---@param angles Angle
+	---@param fov number
+	---@return CamData?
 	function CatmullRomCams.CL.CalcViewOverride(ply, origin, angles, fov)
 		local weap = ply:GetActiveWeapon()
 		
@@ -30,6 +35,8 @@ if CLIENT then
 	end
 	hook.Add("CalcView", "CatmullRomCams.CL.CalcViewOverride", CatmullRomCams.CL.CalcViewOverride)
 	
+	---@param element any
+	---@return boolean?
 	function CatmullRomCams.CL.HUDHide(element)
 		local ply = LocalPlayer()
 
@@ -55,6 +62,10 @@ if CLIENT then
 	end
 	hook.Add("RenderScreenspaceEffects", "CatmullRomCams.CL.BlackenScreenDuringTunneling", CatmullRomCams.CL.BlackenScreenDuringTunneling)
 else
+	---@param ply Player?
+	---@param ent CatmullRomCamera?
+	---@param idx integer
+	---@param buttoned boolean
 	function CatmullRomCams.SH.Toggle(ply, ent, idx, buttoned)
 		if ent and ply and ply.IsPlayer and ent.IsValid and ply:IsPlayer() and ent:IsValid() and (ent:GetClass() == "sent_catmullrom_camera") then
 			return ent:Toggle(ply)
@@ -62,6 +73,9 @@ else
 	end
 	numpad.Register("CatmullRomCamera_Toggle", CatmullRomCams.SH.Toggle)
 
+	---@param ply Player
+	---@param ent CatmullRomCamera
+	---@return boolean?
 	function CatmullRomCams.SH.GravGunPuntStopper(ply, ent)
 		if ent and ent.IsValid and ent:IsValid() and (ent:GetClass() == "sent_catmullrom_camera") then
 			return false

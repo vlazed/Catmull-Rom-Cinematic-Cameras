@@ -1,5 +1,7 @@
 local STool = {}
-  
+
+---@param keys integer[]
+---@return integer
 local function BuildBitFlagMessage(keys)
 	local key_data = 0
 	
@@ -10,6 +12,8 @@ local function BuildBitFlagMessage(keys)
 	return key_data
 end
 
+---@param key_data integer
+---@return integer[]
 local function ExtractBitFlagMessage(key_data)
 	local keys = {}
 	
@@ -28,6 +32,9 @@ end
 
 CatmullRomCams.SToolMethods.NumPadTrigger = STool
 
+---@param self TOOL
+---@param trace TraceResult
+---@return boolean?
 function STool.LeftClick(self, trace)
 	if not self:ValidTrace(trace) then return end
 	if not SERVER then return true end
@@ -39,20 +46,29 @@ function STool.LeftClick(self, trace)
 	return true
 end
 
+---@param self TOOL
+---@param trace TraceResult
+---@return boolean?
 function STool.RightClick(self, trace)
 	if not self:ValidTrace(trace) then return end
 	if CLIENT then return true end
-	if not trace.Entity.OnNodeTriggerNumPadKey then return end
+	local camera = trace.Entity
+	---@cast camera CatmullRomCamera
+	if not camera.OnNodeTriggerNumPadKey then return end
 	
-	self:GetOwner():SendLua("CatmullRomCams.SToolMethods.NumPadTrigger.CopyNumPadSettings(" .. BuildBitFlagMessage(trace.Entity.OnNodeTriggerNumPadKey.Keys) .. ");\n")
+	self:GetOwner():SendLua("CatmullRomCams.SToolMethods.NumPadTrigger.CopyNumPadSettings(" .. BuildBitFlagMessage(camera.OnNodeTriggerNumPadKey.Keys) .. ");\n")
 	
 	return true
 end
 
+---@param key_data integer
 function STool.CopyNumPadSettings(key_data)
 	return STool.CtrlNumPadMulti:SetupKeys(ExtractBitFlagMessage(key_data))
 end
 
+---@param self TOOL
+---@param trace TraceResult
+---@return boolean?
 function STool.Reload(self, trace)
 	if not self:ValidTrace(trace) then return end
 	if not SERVER then return true end
@@ -62,6 +78,7 @@ function STool.Reload(self, trace)
 	return true
 end
 
+---@param self TOOL
 function STool.Think(self)
 	if SERVER then return end
 	
@@ -74,12 +91,14 @@ function STool.Think(self)
 	--AddWorldTip(tr.Entity:EntIndex(), "Key To Trigger: " .. tostring(tr.Entity.OnNodeTriggerNumPadKey), 0.5, tr.Entity:GetPos(), tr.Entity)
 end
 
+---@param panel ControlPanel | DForm
 function STool.BuildCPanel(panel)
 	STool.CtrlNumPadMulti = vgui.Create("CtrlNumPadMulti", panel) -- DNumPadMulti
 	STool.CtrlNumPadMulti:SetLabel("Keys To Trigger Then Node Is Reached: ")
 	STool.CtrlNumPadMulti:SetConVar("catmullrom_camera_numpad_trigger_keys")
 	panel:AddPanel(STool.CtrlNumPadMulti)
 	
-	panel:AddControl("CheckBox", {Label = "Hold Key", Description = "Should the just toggle the key or should it press it and then release it? (Careful with this!)", Command = "catmullrom_camera_numpad_trigger_hold"})
+	panel:CheckBox("Hold Key", "catmullrom_camera_numpad_trigger_hold")
+	panel:SetTooltip("Should the just toggle the key or should it press it and then release it? (Careful with this!)")
 end
 

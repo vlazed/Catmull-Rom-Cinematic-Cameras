@@ -1,3 +1,8 @@
+---@class CatmullRomCamera: Entity
+---@field ViewPointEnt CatmullRomCameraViewPnt
+---@field DeltaBankConstant number
+local ENT = ENT ---@diagnostic disable-line: assign-type-mismatch
+
 ENT.Type = "anim"
 -- We're the root controller, we'll be handling all the real camera stuff (the interpolation will be clientside, but the server will periodicly move the ViewEntity to update the client's PVS)
 ENT.PrintName		= "Cubic Cameras"
@@ -13,6 +18,8 @@ function ENT:InitController()
 	self.CatmullRomController = CatmullRomCams.SH.Controller:New(self)
 end
 
+---@param ent Entity
+---@param lpos Vector
 function ENT:TrackEntity(ent, lpos)
 	if not (ent and lpos and ent.IsValid and ent:IsValid()) then return end
 	
@@ -21,6 +28,7 @@ function ENT:TrackEntity(ent, lpos)
 	return self:SetAngles(((ent:IsPlayer() and (ent:LocalToWorld(lpos) + Vector(0, 0, 54)) or ent:LocalToWorld(lpos)) - self:GetPos()):Angle())
 end 
 
+---@param ply Player
 function ENT:Toggle(ply)
 	if ply:GetNWEntity("UnderControlCatmullRomCamera") ~= NULL then
 		if ply:GetNWEntity("UnderControlCatmullRomCamera") == self then
@@ -31,6 +39,8 @@ function ENT:Toggle(ply)
 	end
 end
 
+---@param ply Player
+---@return nil
 function ENT:On(ply)
 	if SERVER and self:GetNWBool("IsMasterController") and (ply:GetNWEntity("UnderControlCatmullRomCamera") == NULL) then
 		print("toggle on: ", ply)
@@ -46,6 +56,7 @@ function ENT:On(ply)
 		self:GetPointData()
 		--self.CatmullRomController:CalcEntireSpline(self.VecList)
 		
+		---@diagnostic disable-next-line: assign-type-mismatch
 		self.ViewPointEnt = ents.Create("sent_catmullrom_camera_viewpnt")
 		self.ViewPointEnt:SetPos(self.CatmullRomController.PointsList[2])
 		self.ViewPointEnt:SetAngles(self:GetAngles())
@@ -71,6 +82,7 @@ function ENT:On(ply)
 	end
 end
 
+---@param ply Player
 function ENT:Off(ply)
 	if self:GetNWBool("IsMasterController") and (ply:GetNWEntity("UnderControlCatmullRomCamera") == self) then
 		ply:SetNWEntity("UnderControlCatmullRomCamera", NULL)
@@ -88,8 +100,9 @@ function ENT:End()
 	return self:Off(self.PlyVictim)
 end
 
+---@param ply Player
 function ENT:SetPlayer(ply)
-	return self:SetNetworkedEntity("ControllingPlayer", ply)
+	return self:SetNWEntity("ControllingPlayer", ply)
 end
 
 function ENT:RequestSaveData()
@@ -131,6 +144,10 @@ function ENT:RequestSaveData()
 	return tbl
 end
 
+---@param ply Player
+---@param plyID string
+---@param CreatedEntities CatmullRomController
+---@param CatmullRomCamsDupData any
 function ENT:ApplySaveData(ply, plyID, CreatedEntities, CatmullRomCamsDupData)
 	if not CreatedEntities.EntityList then return self:Remove() end
 	
@@ -138,6 +155,7 @@ function ENT:ApplySaveData(ply, plyID, CreatedEntities, CatmullRomCamsDupData)
 	
 	self:SetPlayer(ply)
 	
+	---@diagnostic disable-next-line: param-type-mismatch
 	self:SetNWFloat("Duration", (tbl.Duration > 0) and tbl.Duration or nil)
 	
 	self.FaceTravelDir = tbl.FaceTravelDir
@@ -220,8 +238,8 @@ function ENT:SetTracking(ent, LPos)
 		self:SetSolid(SOLID_VPHYSICS)
 	end
 	
-	self:SetNetworkedVector("TrackEntLPos", LPos)
-	self:SetNetworkedEntity("TrackEnt",     ent)
+	self:SetNWVector("TrackEntLPos", LPos)
+	self:SetNWEntity("TrackEnt",     ent)
 	
 	return self:NextThink(CurTime())
 end
@@ -272,14 +290,17 @@ function ENT:SetSmartLookClosest(val)
 	self.SmartLookClosest = val
 end
 
+---@param bool boolean
 function ENT:SetEnableRoll(bool)
 	self.EnableRoll = bool
 end
 
+---@param roll number
 function ENT:SetRoll(roll)
 	self.Roll = roll
 end
 
+---@param zoom number
 function ENT:SetZoom(zoom)
 	self.Zoom = zoom
 	
@@ -296,9 +317,10 @@ function ENT:CalcPerc()
 	return self.CatmullRomController:CalcPerc()
 end
 
+---@param terminating_entity_marker CatmullRomCamera?
 function ENT:GetPointData(terminating_entity_marker)
 	if not self:GetNWBool("IsMasterController") then return end
-	if self:SetNWBool("IsMapController") then return end
+	if self:GetNWBool("IsMapController") then return end
 	
 	local lastent = self
 	local count = 1
@@ -362,12 +384,17 @@ function ENT:ResetController(ent)
 	end
 end
 
+---@param ent CatmullRomCamera
 function ENT:RebuildTrack(ent)
 	self:ResetController()
 	
 	return self:GetPointData(ent)
 end
 
+---@param ent Entity
+---@param trackidx integer
+---@param dont_loop_back boolean?
+---@return CatmullRomCamera?
 function ENT:ClearTrack(ent, trackidx, dont_loop_back)
 	if trackidx == 1 then return end
 	

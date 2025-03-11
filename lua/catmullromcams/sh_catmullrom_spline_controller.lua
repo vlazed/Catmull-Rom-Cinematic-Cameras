@@ -5,7 +5,15 @@
 	adapt it to whatever is needed.
 --]]
 
-
+---@class CatmullRomController
+---@field EntityList CatmullRomCamera[]
+---@field DurationList number[]
+---@field PointsList Vector[]
+---@field FacingsList Vector[]
+---@field RotationsList Angle[]
+---@field ZoomList number[]
+---@field Host CatmullRomCamera
+---@field Spline Vector[]
 local Controller = {}
 Controller.STEPS = 10
 
@@ -77,6 +85,8 @@ function Controller:CalcPerc()
 	-- Isolate a very specific issue where if it was at segment 3 and
 	-- you removed/undid to 4 nodes it would panic.
 	
+	---INFO: I'm not sure where `i` gets set, but it's being used here 
+	---@diagnostic disable-next-line: undefined-global
 	if (i == 3) and (#self.PointsList == 4) then
 		self.CurSegment = 2
 	end

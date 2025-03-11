@@ -1,3 +1,5 @@
+---INFO: SMH is defined as a global table in Stop Motion Helper 
+---@diagnostic disable-next-line: undefined-global
 if not SMH then return end
 
 TOOL.Category   = "Interfaces"

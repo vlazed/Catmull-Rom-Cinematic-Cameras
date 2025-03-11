@@ -5,7 +5,7 @@ if SERVER then return end
 local MAX_TRIES = 0
 
 do
-    -- UI doesn't sync with internal changes to the PhysRecord state, so we'll revert everything for the user
+    -- SMH PhysRecorder UI doesn't sync with internal changes to the PhysRecord state, so we'll revert everything for the user
     local oldState = {
         FrameCount = 0,
         RecordInterval = 0,

@@ -2,6 +2,10 @@ include("shared.lua")
 
 local drawCatmullRomCameras = CreateConVar("cl_draw_catmullrom_cameras", "1")
 
+---@class CatmullRomCamera: Entity
+---@field CLTrackIndex integer
+local ENT = ENT ---@diagnostic disable-line: assign-type-mismatch
+
 ENT.RenderGroup = RENDERGROUP_BOTH
 
 local SpriteOffset = Vector(0, 0, 32)
@@ -65,9 +69,9 @@ function ENT:Think()
 		self.WasPlayingFOVHackz = false
 	end
 	
-	self:TrackEntity(self.Entity:GetNetworkedEntity("TrackEnt"), self.Entity:GetNetworkedVector("TrackEntLPos"))
+	self:TrackEntity(self.Entity:GetNWEntity("TrackEnt"), self.Entity:GetNWVector("TrackEntLPos"))
 	
-	self.ShouldDrawInfo = (self:GetNWEntity("MasterController"):GetNetworkedEntity("ControllingPlayer") == LocalPlayer())
+	self.ShouldDrawInfo = (self:GetNWEntity("MasterController"):GetNWEntity("ControllingPlayer") == LocalPlayer())
 	self.ShouldDraw     = (drawCatmullRomCameras:GetInt() == 0) and 0 or 1 -- Like that you can see other player's cameras while you're filming
 	
 	if (self.ShouldDraw == 0) then return end
@@ -268,7 +272,7 @@ function ENT:RequestGuideBeamDraw(trackindex)
 		
 		render.SetMaterial(MatLaser)
 		render.StartBeam(self.CatmullRomController.STEPS + 2)
-			ok, err = pcall(self.RenderSubBeams, self, CTime, (trackindex - 1))
+			pcall(self.RenderSubBeams, self, CTime, (trackindex - 1))
 		render.EndBeam()
 	end
 	
@@ -277,7 +281,7 @@ function ENT:RequestGuideBeamDraw(trackindex)
 		
 		render.SetMaterial(MatLaser)
 		render.StartBeam(self.CatmullRomController.STEPS + 2)
-			ok, err = pcall(self.RenderSubBeams, self, CTime, trackindex)
+			pcall(self.RenderSubBeams, self, CTime, trackindex)
 		render.EndBeam()
 	end
 end

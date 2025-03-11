@@ -1,14 +1,14 @@
 do return end -- BROKEN PIECE OF SHIT! :argh: GARRRRRYYYYYYYYYYYYYY!!!!!!!!!!!!
 function CatmullRomCams.SV.Save(save_data)
-	if not CatmullRomCams.Tracks[player.GetByID(1):UniqueID()] then return end
+	if not CatmullRomCams.Tracks[player.GetByID(1):SteamID64()] then return end
 	
 	local SaveGameData = {} -- I'm assuming here that you can only save games in singleplayer. Tell me if I'm wrong though! :V
 	
-	for numpad_key, track in pairs(CatmullRomCams.Tracks[player.GetByID(1):UniqueID()]) do
+	for numpad_key, track in pairs(CatmullRomCams.Tracks[player.GetByID(1):SteamID64()]) do
 		SaveGameData[numpad_key] = 1--{}
 		if false then
 		for index, node in ipairs(track) do
-			SaveGameData[numpad_key][index] = {Ent = node:EntIndex(), Data = node:RequestSaveData(true)}
+			SaveGameData[numpad_key][index] = {Ent = node:EntIndex(), Data = node:RequestSaveData()}
 		end
 		end
 	end
@@ -18,7 +18,7 @@ end
 
 function CatmullRomCams.SV.Restore(restore_data)
 	local SavedGameData = saverestore.ReadTable(restore_data)
-	local plyID = player.GetByID(1):UniqueID()
+	local plyID = player.GetByID(1):SteamID64()
 	PrintTable(SavedGameData)
 	
 	for numpad_key, track in pairs(SavedGameData) do

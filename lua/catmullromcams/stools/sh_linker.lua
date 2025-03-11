@@ -11,7 +11,7 @@ function STool.LeftClick(self, trace)
 	if CLIENT then return true end
 	
 	local ply   = self:GetOwner()
-	local plyID = ply:UniqueID()
+	local plyID = ply:SteamID64()
 	
 	if not trace.Entity.UndoData.PID == plyID then return end
 	

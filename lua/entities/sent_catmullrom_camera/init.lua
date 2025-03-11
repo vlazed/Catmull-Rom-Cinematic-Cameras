@@ -2,6 +2,15 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua") 
 include("shared.lua")
 
+---@class TriggerNumPadKeyInfo
+---@field Hold boolean
+---@field Keys integer[]
+
+---@class CatmullRomCamera: Entity
+---@field Entity Entity
+---@field OnNodeTriggerNumPadKey TriggerNumPadKeyInfo
+local ENT = ENT ---@diagnostic disable-line: assign-type-mismatch
+
 local CAMERA_MODEL = Model("models/dav0r/camera.mdl")
 
 ENT.KeyTriggerInformation = {}
@@ -30,7 +39,7 @@ end
 function ENT:Think()
 	if self.IsMapController then return end
 	
-	self:TrackEntity(self.Entity:GetNetworkedEntity("TrackEnt"), self.Entity:GetNetworkedVector("TrackEntLPos"))
+	self:TrackEntity(self.Entity:GetNWEntity("TrackEnt"), self.Entity:GetNWVector("TrackEntLPos"))
 	
 	if self:GetNWBool("IsMasterController") then
 		if self.Playing and self.ViewPointEnt then
@@ -48,32 +57,40 @@ function ENT:Think()
 	self.Entity:NextThink(CurTime())
 end
 
+---@param segment integer
 function ENT:OnChangeSegment(segment)
+	---@type CatmullRomCamera
 	local ent = CatmullRomCams.Tracks[self.UndoData.PID][self.UndoData.Key][segment]
 	
 	if ent and ent:IsValid() and ent.OnNodeTriggerNumPadKey then
-		local ply    = self:GetNetworkedEntity("ControllingPlayer")
+		local ply    = self:GetNWEntity("ControllingPlayer")
 		
-		self:InternalQuickToggleNumpad(ent.OnNodeTriggerNumPadKey.Keys, ply, ply:UniqueID())
+		self:InternalQuickToggleNumpad(ent.OnNodeTriggerNumPadKey.Keys, ply, ply:SteamID64())
 		
 		if not ent.OnNodeTriggerNumPadKey.Hold then
-			return timer.Simple(.25, self.InternalQuickToggleNumpad, self, ent.OnNodeTriggerNumPadKey.Keys, ply, ply:UniqueID())
+			return timer.Simple(.25, function()
+				self:InternalQuickToggleNumpad(ent.OnNodeTriggerNumPadKey.Keys, ply, ply:SteamID64())
+			end)
 		end
 	end
 end
 
+---@param keys integer[]
+---@param ply Player
+---@param plyid string
 function ENT:InternalQuickToggleNumpad(keys, ply, plyid)
 	for _, key in pairs(keys) do
 		if self.KeyTriggerInformation[key] then
-			numpad.Deactivate(ply, nil, {key}, plyid) -- Stupid numpad lib needs this as a table ):<
+			numpad.Deactivate(ply, key, plyid) -- Stupid numpad lib needs this as a table ):<
 		else
-			numpad.Activate(ply, nil, {key}, plyid)
+			numpad.Activate(ply, key, plyid)
 		end
 		
 		self.KeyTriggerInformation[key] = not self.KeyTriggerInformation[key]
 	end
 end
 
+---@param physobj PhysObj
 function ENT:PhysicsUpdate(physobj)
 	if not self.Entity:IsPlayerHolding() then
 		if self.IsMapController then
@@ -84,6 +101,7 @@ function ENT:PhysicsUpdate(physobj)
 	end
 end
 
+---@param filename string
 function ENT:LoadForMap(filename)
 	filename = filename or ""
 	
@@ -100,11 +118,12 @@ function ENT:LoadForMap(filename)
 	
 	self:InitController()
 	
+	---@type string
 	local data = file.Read("CatmullRomCameraTracks/" .. filename .. ".txt")
 	
 	if not data then return Error("Could not load filename track '" .. filename .. "' from disk! " .. tostring(self) .. " map controller will not work!!!\n") end
 	
-	data = util.KeyValuesToTable(data)
+	local data = util.KeyValuesToTable(data)
 	
 	for k, v in ipairs(data) do
 	end
@@ -151,7 +170,7 @@ function ENT:PreEntityCopy() -- build the DupeInfo table and save it as an entit
 end
 
 function ENT:PostEntityPaste(Player, Ent, CreatedEntities)
-	local plyID = Player:UniqueID()
+	local plyID = Player:SteamID64()
 	
 	if Ent.EntityMods and Ent.EntityMods.CatmullRomCamsDupData then
 		--[[

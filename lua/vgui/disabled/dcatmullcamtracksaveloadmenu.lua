@@ -3,14 +3,17 @@
 PANEL.VoteName     = "none"
 PANEL.MaterialName = "exclamation"
 
+local refreshMaterial = Material("gui/silkicons/arrow_refresh")
+local saveMaterial = Material("gui/silkicons/camera_add")
+
 function PANEL:Init()
 	self.RefreshBtn = vgui.Create("DImageButton", self)
-	self.RefreshBtn:SetMaterial("gui/silkicons/arrow_refresh")
+	self.RefreshBtn:SetMaterial(refreshMaterial)
 	self.RefreshBtn:SetTooltip("Refresh List")
 	self.RefreshBtn.DoClick = function() return self:Populate() end
 	
 	self.SaveBtn = vgui.Create("DImageButton", self)
-	self.SaveBtn:SetMaterial("gui/silkicons/camera_add")
+	self.SaveBtn:SetMaterial(saveMaterial)
 	self.SaveBtn:SetTooltip("Save Track")
 	self.SaveBtn.DoClick = function() self:Save() end
 	
@@ -61,7 +64,7 @@ end
 function PANEL:Populate()
 	self.List:Clear()
 	
-	self.SaveList = file.Find(CatmullRomCams.FilePath .. "*.txt")
+	self.SaveList = file.Find(CatmullRomCams.FilePath .. "*.txt", "DATA")
 	
 	for k, v in pairs(self.SaveList) do
 		local btn = vgui.Create("DCatmullCamTrackSaveLoadButton", self)

@@ -1,4 +1,4 @@
-
+---@class CtrlNumPadMulti: DPanel
 local PANEL = {}
 
 function PANEL:Init()

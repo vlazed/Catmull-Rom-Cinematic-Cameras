@@ -10,9 +10,19 @@ local function MakeLabel()
 	return ("Distance required for shot: " .. Calc(STool.DurationSlider:GetValue(), STool.EndFOVSlider:GetValue()) .. " Meters")
 end
 
+---@param ply Player
+---@param plyID string
+---@param key integer
+---@param pos Vector
+---@param ang Angle
+---@param fov number
+---@param width number
+---@return {[1]: CatmullRomCamera, [2]: Entity}?
 local function CreateNode(ply, plyID, key, pos, ang, fov, width)
 	local track_index = #CatmullRomCams.Tracks[plyID][key] + 1
 	print(track_index)
+	---@type CatmullRomCamera
+	---@diagnostic disable-next-line: assign-type-mismatch
 	local camera = ents.Create("sent_catmullrom_camera")
 	if not (camera and camera.IsValid and camera:IsValid()) then return end
 	
@@ -80,11 +90,14 @@ local function UndoHitchcock(ent)
 	end
 end
 
+---@param self TOOL
+---@param trace TraceResult
+---@return boolean?
 function STool.LeftClick(self, trace)
 	if not self:ValidTrace(trace) then return end
 	
 	local ply   = self:GetOwner()
-	local plyID = ply:UniqueID()
+	local plyID = ply:SteamID64()
 	local pos   = trace.Entity:GetPos()
 	local aim   = trace.Entity:GetForward()
 	local ang   = trace.Entity:GetAngles()
@@ -95,21 +108,25 @@ function STool.LeftClick(self, trace)
 	if not STool.CheckDistances(pos, aim, dist, ply) then return end
 	if CLIENT then return true end
 	
-	local key = trace.Entity.UndoData.Key
+	local camera = trace.Entity
+	---@cast camera CatmullRomCamera
+
+	local key = camera.UndoData.Key
 	
 	print(width)
-	trace.Entity:SetHitchcockEffect(width)
+	camera:SetHitchcockEffect(width)
 	
 	undo.Create("CatmullRomCamsHitchcockEffect")
 		for i = 1, 2 do
 			local pos = (i == 1) and (pos + (aim * CatmullRomCams.SH.MetersToUnits(dist) * -1)) or (pos + (aim * (CatmullRomCams.SH.MetersToUnits(dist) * -1 - 20)))
 			local tbl = CreateNode(ply, plyID, key, pos, ang, fov, width)
-			
+			if not tbl then undo.Finish() return end
+
 			undo.AddEntity(tbl[1])
 			undo.AddEntity(tbl[2])
 		end
 		
-		undo.AddFunction(UndoHitchcock, trace.Entity)
+		undo.AddFunction(UndoHitchcock, camera)
 		undo.SetPlayer(ply)
 	undo.Finish()
 	
@@ -125,10 +142,12 @@ end
 function STool.Think(self)
 end
 
+---@param panel ControlPanel | DForm
 function STool.BuildCPanel(panel)
-	STool.DurationSlider = panel:AddControl("Slider", {Label = "Scene Width (Meters): ",          Type = "Float", Min = "0.1", Max = "25",  Command = "catmullrom_camera_hitchcock_width"})
-	STool.EndFOVSlider   = panel:AddControl("Slider", {Label = "End FOV: ", Type = "Float", Min = "0.1", Max = "110", Command = "catmullrom_camera_hitchcock_endfov"})
-	STool.ETDLabel       = panel:AddControl("Label",  {Text = MakeLabel(), Description = "How much space do we need for this shot?"})
+	STool.DurationSlider = panel:NumSlider("Scene Width (Meters): ", "catmullrom_camera_hitchcock_width", 0.1, 25)
+	STool.EndFOVSlider   = panel:NumSlider("End FOV: ", "catmullrom_camera_hitchcock_endfov", 0.1, 110)
+	STool.ETDLabel       = panel:Help(MakeLabel())
+	STool.ETDLabel:SetTooltip("How much space do we need for this shot?")
 	
 	function STool.DurationSlider:OnValueChanged(val)
 		return STool.ETDLabel:SetText(MakeLabel())

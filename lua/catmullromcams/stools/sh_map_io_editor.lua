@@ -2,6 +2,9 @@ local STool = {}
 
 CatmullRomCams.SToolMethods.MapIOEditor = STool
 
+---@param self TOOL
+---@param trace TraceResult
+---@return boolean?
 function STool.LeftClick(self, trace)
 	if not self:ValidTrace(trace) then return end
 	
@@ -12,6 +15,9 @@ function STool.LeftClick(self, trace)
 	return true
 end
 
+---@param self TOOL
+---@param trace TraceResult
+---@return boolean?
 function STool.RightClick(self, trace)
 	if not self:ValidTrace(trace) then return end
 	
@@ -22,6 +28,9 @@ function STool.RightClick(self, trace)
 	return true
 end
 
+---@param self TOOL
+---@param trace TraceResult
+---@return boolean?
 function STool.Reload(self, trace)
 	if not self:ValidTrace(trace) then return end
 	
@@ -30,6 +39,7 @@ function STool.Reload(self, trace)
 	return true
 end
 
+---@param self TOOL
 function STool.Think(self)
 	if SERVER then return end
 	
@@ -44,9 +54,10 @@ function STool.Think(self)
 	AddWorldTip(trace.Entity:EntIndex(), msg, 0.5, trace.Entity:GetPos(), trace.Entity )
 end
 
+---@param panel ControlPanel | DForm
 function STool.BuildCPanel(panel)
-	panel:AddControl("CheckBox", {Label = "OnUser1", Command = "catmullrom_camera_map_io_user1"})
-	panel:AddControl("CheckBox", {Label = "OnUser2", Command = "catmullrom_camera_map_io_user2"})
-	panel:AddControl("CheckBox", {Label = "OnUser3", Command = "catmullrom_camera_map_io_user3"})
-	panel:AddControl("CheckBox", {Label = "OnUser4", Command = "catmullrom_camera_map_io_user4"})
+	panel:CheckBox("OnUser1", "catmullrom_camera_map_io_user1")
+	panel:CheckBox("OnUser2", "catmullrom_camera_map_io_user2")
+	panel:CheckBox("OnUser3", "catmullrom_camera_map_io_user3")
+	panel:CheckBox("OnUser4", "catmullrom_camera_map_io_user4")
 end

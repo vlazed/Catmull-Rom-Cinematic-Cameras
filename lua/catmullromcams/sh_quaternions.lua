@@ -164,7 +164,7 @@ function Quaternion:FromAngle(angle)
 end
 
 function Quaternion:ToAngle(angle)
-	angle = angle or Angle()
+	angle = angle or angle_zero * 1
 	
 	local singularity_checks = (self.Vec.y * self.Vec.z) + (self.Vec.x * self.Rotation)
 	
@@ -221,22 +221,22 @@ function Quaternion:AimZAxis(point_a, point_b)
 end
 
 -- Creates a value from spherical linear interpolation
-function QuaternionSlerp(start_quat, end_quat, perc) -- THIS IS SLOWER THEN NLERP!!!
-	if start_quat == end_quat then return start_quat end
+-- function QuaternionSlerp(start_quat, end_quat, perc) -- THIS IS SLOWER THEN NLERP!!!
+-- 	if start_quat == end_quat then return start_quat end
 	
-	local perc_a = 1 - perc
-	local perc_b = perc
+-- 	local perc_a = 1 - perc
+-- 	local perc_b = perc
 	
-	local theta	 = math.acos(a.Dot(b));
-	local sin_theta = math.sin(theta);
+-- 	local theta	 = math.acos(a.Dot(b));
+-- 	local sin_theta = math.sin(theta);
 
-	if sin_theta > 0.001 then
-		perc_a = math.sin((1 - perc) * theta ) / sin_theta
-		perc_b = math.sin(perc * theta) / sin_theta
-	end
+-- 	if sin_theta > 0.001 then
+-- 		perc_a = math.sin((1 - perc) * theta ) / sin_theta
+-- 		perc_b = math.sin(perc * theta) / sin_theta
+-- 	end
 	
-	return ((a * perc_a) + (b * perc_b))
-end
+-- 	return ((a * perc_a) + (b * perc_b))
+-- end
 
 -- Unlike spherical interpolation, this does not rotate at a constant velocity, and it's faster to do
 function QuaternionNLerp(start_quat, end_quat, perc)

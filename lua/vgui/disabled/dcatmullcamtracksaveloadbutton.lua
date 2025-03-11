@@ -2,11 +2,13 @@
 
 local PANEL = {}
 
+local deleteMaterial = Material("gui/silkicons/camera_delete")
+
 function PANEL:Init()
 	self.SelectButton = vgui.Create("DButton", self)
 	
 	self.DeleteButton = vgui.Create("DImageButton", self)
-	self.DeleteButton:SetMaterial("gui/silkicons/camera_delete")
+	self.DeleteButton:SetMaterial(deleteMaterial)
 	self.DeleteButton:SetTooltip("Delete this track from your HDD.")
 	--[[
 	self.EditButton = vgui.Create("DImageButton", self)

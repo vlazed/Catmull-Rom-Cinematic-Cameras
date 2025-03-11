@@ -2,6 +2,11 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua") 
 include("shared.lua")
 
+---@class CatmullRomCameraViewPnt: Entity
+---@field Entity Entity
+---@field CatmullRomController CatmullRomController
+local ENT = ENT ---@diagnostic disable-line: assign-type-mismatch
+
 local CAMERA_MODEL = Model("models/hunter/blocks/cube025x025x025.mdl")
 local COLOR_GHOST = Color(0, 0, 0, 100)
 
@@ -15,7 +20,7 @@ ENT.PhysShadowControl.maxspeeddamp     = 1000000
 ENT.PhysShadowControl.maxangulardamp   = 1000000
 ENT.PhysShadowControl.dampfactor       = 1
 ENT.PhysShadowControl.teleportdistance = 0
-ENT.PhysShadowControl.deltatime        = deltatime
+ENT.PhysShadowControl.deltatime        = 0
 
 function ENT:Initialize() 
 	self.Entity:SetModel(CAMERA_MODEL)
@@ -136,7 +141,7 @@ function ENT:PhysicsSimulate(phys, deltatime)
 	phys:Wake()
 	
 	if CurNode.HitchcockEffect then
-		self.HitchcockEffectEndpoint = self.HitchcockEffectEndpoint or (self.CatmullRomController.PointsList[self.CatmullRomController.CurSegment + 2] - self.CatmullRomController.PointsList[self.CatmullRomController.CurSegment + 1]):GetNormal()
+		self.HitchcockEffectEndpoint = self.HitchcockEffectEndpoint or (self.CatmullRomController.PointsList[self.CatmullRomController.CurSegment + 2] - self.CatmullRomController.PointsList[self.CatmullRomController.CurSegment + 1]):GetNormalized()
 		
 		self.PhysShadowControl.pos = self.CatmullRomController.PointsList[self.CatmullRomController.CurSegment] + (self.HitchcockEffectEndpoint * CatmullRomCams.SH.MetersToUnits(self:CalcHitchcockEffect(CurNode.HitchcockEffect, zoom)))
 	else

@@ -1,6 +1,11 @@
 
 local gmodToolMode = GetConVar("gmod_toolmode")
 
+---@param ply CRCPlayer
+---@param origin Vector
+---@param angles Angle
+---@param fov number
+---@return CamData?
 function CatmullRomCams.CL.CalcViewOverride(ply, origin, angles, fov)
 	gmodToolMode = gmodToolMode or GetConVar("gmod_toolmode")
 	local weap = ply:GetActiveWeapon()
