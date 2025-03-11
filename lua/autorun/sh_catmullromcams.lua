@@ -22,6 +22,8 @@ local function AddLua(filename)
 	local tmp = string.Explode("/", string.lower(filename))
 	local parts = string.Explode("_", tmp[#tmp])
 	
+	if parts[1] == "types.lua" then return end
+
 	if SERVER then
 		if (parts[1] == "sh") or (parts[1] == "shared.lua") then
 			include(filename)
