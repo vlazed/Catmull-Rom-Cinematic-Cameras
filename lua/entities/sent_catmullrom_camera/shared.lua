@@ -149,7 +149,7 @@ end
 ---@param CreatedEntities CatmullRomController
 ---@param CatmullRomCamsDupData any
 function ENT:ApplySaveData(ply, plyID, CreatedEntities, CatmullRomCamsDupData)
-	if not CreatedEntities.EntityList then return self:Remove() end
+	if not CreatedEntities then return self:Remove() end
 	
 	local tbl = CatmullRomCamsDupData
 	
@@ -213,20 +213,22 @@ function ENT:ApplySaveData(ply, plyID, CreatedEntities, CatmullRomCamsDupData)
 			--print("Set controller to ", CatmullRomCams.Tracks[plyID][self.UndoData.Key][1])
 		end
 	end
+
+	if CatmullRomCamsDupData.ChildCamera then
+		local child = CreatedEntities[CatmullRomCamsDupData.ChildCamera]
 	
-	local child = CreatedEntities[CatmullRomCamsDupData.ChildCamera]
-	
-	if (not (child and child:IsValid())) and (not CreatedEntities.EntityList[CatmullRomCamsDupData.ChildCamera]) then
-		child = ents.GetByIndex(CatmullRomCamsDupData.ChildCamera)
-	end
-	
-	if child and child:IsValid() then
-		self:DeleteOnRemove(child) -- Because we don't want to have broken chains let's daisy chain them to self destruct
+		if (not (child and child:IsValid())) and (not CreatedEntities[CatmullRomCamsDupData.ChildCamera]) then
+			child = ents.GetByIndex(CatmullRomCamsDupData.ChildCamera)
+		end
 		
-		self:SetNWEntity("ChildCamera", child)
+		if child and child:IsValid() then
+			self:DeleteOnRemove(child) -- Because we don't want to have broken chains let's daisy chain them to self destruct
+			
+			self:SetNWEntity("ChildCamera", child)
+		end	
 	end
 	
-	--return self:InitController()
+	return self:InitController()
 end
 
 function ENT:SetTracking(ent, LPos)
@@ -449,8 +451,7 @@ function ENT:OnRemove()
 		
 		if not self.CLTrackIndex then 
 
-
-			if self:GetNWEntity("MasterController") then
+			if self:GetNWEntity("MasterController") and self:GetNWEntity("MasterController"):IsValid() then
 				self:GetNWEntity("MasterController"):GetPointData() 
 			end
 			

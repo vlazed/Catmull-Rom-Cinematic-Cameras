@@ -38,6 +38,7 @@ end
 
 function ENT:Think()
 	if self.IsMapController then return end
+	if not IsValid(self.Entity) then return end
 	
 	self:TrackEntity(self.Entity:GetNWEntity("TrackEnt"), self.Entity:GetNWVector("TrackEntLPos"))
 	
@@ -171,8 +172,8 @@ end
 
 function ENT:PostEntityPaste(Player, Ent, CreatedEntities)
 	local plyID = Player:SteamID64()
-	
 	if Ent.EntityMods and Ent.EntityMods.CatmullRomCamsDupData then
+		PrintTable(Ent.EntityMods.CatmullRomCamsDupData)
 		--[[
 		if not CatmullRomCams.Tracks[plyID][Ent.EntityMods.CatmullRomCamsDupData.UndoData.Key].IsLockedForLoad then  -- hackz
 			for k, v in pairs(CatmullRomCams.Tracks[plyID][Ent.EntityMods.CatmullRomCamsDupData.UndoData.Key]) do

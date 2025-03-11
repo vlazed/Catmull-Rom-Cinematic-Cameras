@@ -205,10 +205,16 @@ function STool.Reload(self, trace)
 	return true
 end
 
+local lastRebuild = false
+---@param self TOOL
 function STool.Think(self)
 	if SERVER then return end
 	
 	CatmullRomCams.SToolMethods.ToolObj = self -- Hackz
+	if not lastRebuild then
+		self:RebuildControlPanel()
+		lastRebuild = true
+	end
 end
 
 if SERVER then
@@ -220,8 +226,10 @@ include("catmullromcams/derma/presetsaver.lua")
 function STool.BuildCPanel(panel)
 	--panel:AddControl("Header", {Text = "Catmull-Rom Cinematic Cameras: Track Layout Creator", Description = "Use this to create your track's layout!"})
 	local presetSaver = vgui.Create("crc_presetsaver", panel)
-	presetSaver:SetDirectory("catmullromcams/tracks")
+	presetSaver:SetDirectory(CatmullRomCams.FilePath)
 	panel:AddItem(presetSaver)
+
+	local saveName = panel:TextEntry("Preset name: ", "")
 
 	local keybinder = panel:KeyBinder("Track Trigger Key: ", "catmullrom_camera_key")
 	-- panel:AddControl("Numpad",   {Label = "Track Trigger Key: ", Command = "catmullrom_camera_key", ButtonSize = 22})
